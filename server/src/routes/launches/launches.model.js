@@ -19,10 +19,8 @@ launches.set(launch.flightNumber, launch)
 
 
 
-const launchExistWithId = async (launchId) => {
-    return await Launch.findOne({
-        flightNumber: launchId
-    })
+const launchExistWithId = (launchId) => {
+    return launches.has(launchId)
 }
 const getAllLaunches = async () => {
     return await Launch.find()
@@ -44,7 +42,7 @@ const saveLaunch = async (launch) => {
     })
 }
 
-saveLaunch(launch)
+// saveLaunch(launch)
 
 
 const getLatestFightNumber = async () => {
@@ -101,17 +99,11 @@ const scheduleNewLaunch = async (launch) => {
 
 const abortLaunchWithId = async (launchId) => {
 
-    const aborted = await Launch.updateOne({
+    const aborted = await Launch.findByIdAndDelete(launchId)
 
-        flightNumber: launchId
-    }, {
-        upcoming: false,
-        success: false,
-    }
-    )
-
-    return aborted.ok === 1 && aborted.nModified === 1;
+    return aborted
 }
+
 module.exports = {
     getAllLaunches,
     launchExistWithId,

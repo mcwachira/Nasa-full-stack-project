@@ -1,13 +1,13 @@
 
-const { getAllLaunches, addNewLaunch, launchExistWithId, abortLaunchWithId } = require('../../models/launches.model')
+const { getAllLaunches, scheduleNewLaunch, launchExistWithId, abortLaunchWithId } = require('../../models/launches.model')
 
-const httpGetAllLaunches = (req, res) => {
+const httpGetAllLaunches = async (req, res) => {
 
     // console.log(launches)
-    return res.status(200).json(getAllLaunches())
+    return res.status(200).json(await getAllLaunches())
 }
 
-const httpAddLaunchData = (req, res) => {
+const httpAddLaunchData = async (req, res) => {
     let { mission, rocket, launchDate, target } = req.body
 
 
@@ -28,20 +28,27 @@ const httpAddLaunchData = (req, res) => {
     }
 
     // console.log(launches)
-    addNewLaunch(newLaunchDate)
+    await scheduleNewLaunch(newLaunchDate)
 
     res.status(201).json(newLaunchDate)
 }
 
 
-const httpAbortLaunch = (req, res) => {
+const httpAbortLaunch = async (req, res) => {
     const launchId = Number(req.params.id)
 
-    if (!launchExistWithId(launchId)) {
+    const existingId = launchExistWithId(launchId)
+    if (!existingId) {
         return res.status(404).json({ error: 'NO id for the data present' })
     }
 
-    const aborted = abortLaunchWithId(launchId)
+    const aborted = await abortLaunchWithId(launchId)
+
+    if (!aborted) {
+        return res.status(400).json({
+            error: 'Launch not aborted'
+        })
+    }
     return res.status(200).json(aborted)
 }
 

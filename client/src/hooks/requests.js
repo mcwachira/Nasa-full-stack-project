@@ -8,6 +8,7 @@ async function httpGetPlanets() {
 
   //you only can consume Response.json() once, if you are consuming it more than once, the error will happen.
   // console.log(await response.json())
+  // console.log(response.json())
   return await response.clone().json();
 
 }

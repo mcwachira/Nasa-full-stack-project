@@ -1,10 +1,11 @@
 
 const { getHabitablePlanets } = require('../../models/planets.model')
 
-const httpGetAllPlanets = (req, res) => {
+const httpGetAllPlanets = async (req, res) => {
 
-    console.log(getHabitablePlanets())
-    return res.status(200).json(getHabitablePlanets())
+    console.log('planet data starts here')
+    console.log(await getHabitablePlanets())
+    return res.status(200).json(await getHabitablePlanets())
 }
 
 
