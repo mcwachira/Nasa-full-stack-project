@@ -1,0 +1,27 @@
+{
+	"name": "nasa-full-stack-project",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"install-server": "npm install --prefix server",
+		"install-client": "npm install --prefix client",
+		"install": "npm install --prefix server && npm install --prefix client",
+		"server": "npm run dev --prefix server",
+		"client": "npm start --prefix client",
+		"watch": "npm run server & npm run client",
+		"deploy": "npm run build --prefix client && npm run start --prefix  server",
+		"test": "npm run test --prefix server && npm run test --prefix client"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mcwachira/Nasa-full-stack-project.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/mcwachira/Nasa-full-stack-project/issues"
+	},
+	"homepage": "https://github.com/mcwachira/Nasa-full-stack-project#readme"
+}
