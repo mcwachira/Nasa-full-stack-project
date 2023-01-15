@@ -13,10 +13,10 @@ describe('Launch Api', () => {
     afterAll(async () => {
         await disconnectDb()
     })
-    describe('Test GET /launches ', () => {
+    describe('Test GET /v1/launches ', () => {
         test('It should respond with a 200 success', async () => {
             const response = await request(app)
-                .get('/launches/get')
+                .get('/v1/launches/get')
                 .expect('Content-Type', /json/)
                 .expect(200)
         })
@@ -24,7 +24,7 @@ describe('Launch Api', () => {
 
     })
 
-    describe('Test POST /launches ', () => {
+    describe('Test POST /v1/launches ', () => {
 
         const completedLaunchData = {
             mission: "Kepler Exploration Y",
@@ -49,7 +49,7 @@ describe('Launch Api', () => {
 
         test('It should respond with a 201 created', async () => {
             const response = await request(app)
-                .post('/launches/add')
+                .post('/v1/launches/add')
                 .send(completedLaunchData)
                 .expect('Content-Type', /json/)
                 .expect(201)
@@ -66,7 +66,7 @@ describe('Launch Api', () => {
         test('it should catch a missing required properties', async () => {
 
             const response = await request(app)
-                .post('/launches/add')
+                .post('/v1/launches/add')
                 .send(LaunchDataWithoutDate)
                 .expect('Content-Type', /json/)
                 .expect(400)
@@ -79,7 +79,7 @@ describe('Launch Api', () => {
         })
         test('it should catch invalid dates', async () => {
 
-            const response = await request(app).post('/launches/add').send(LaunchDataBadDate).expect('Content-Type', /json/).expect(400)
+            const response = await request(app).post('/v1/launches/add').send(LaunchDataBadDate).expect('Content-Type', /json/).expect(400)
 
             expect(response.body).toStrictEqual({
                 error: 'date invalid format '

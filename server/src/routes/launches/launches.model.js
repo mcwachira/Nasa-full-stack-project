@@ -3,18 +3,7 @@ const Launch = require('./launchesModel');
 const Planets = require('./planetModel')
 let DEFAULT_FLIGHT_NUMBER = 100
 
-const launch = {
-    flightNumber: 100,
-    mission: 'Kepler Exploration X',
-    rocket: 'Explorer ISI',
-    launchDate: new Date('December 27, 2030'),
-    target: 'Kepler-422b',
-    customers: ['ztmn', 'Nasa'],
-    upcoming: true,
-    success: true
-}
 
-launches.set(launch.flightNumber, launch)
 
 
 
@@ -22,8 +11,11 @@ launches.set(launch.flightNumber, launch)
 const launchExistWithId = (launchId) => {
     return launches.has(launchId)
 }
-const getAllLaunches = async () => {
-    return await Launch.find()
+const getAllLaunches = async (skip, limit) => {
+    return await Launch.find({}, { '_id': 0, '_v': 0 })
+        .sort({ flightNumber: 1 })
+        .skip(skip)
+        .limit(limit)
 }
 
 const saveLaunch = async (launch) => {

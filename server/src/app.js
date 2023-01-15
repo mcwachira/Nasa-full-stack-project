@@ -6,6 +6,7 @@ const morgan = require('morgan')
 
 
 
+
 //enabling cors
 app.use(cors(
     {
@@ -30,12 +31,15 @@ app.use(express.static('public'))
 app.use('/', express.static(path.join(__dirname, '..', '/public')))
 
 //imports our routers
-const planetsRouter = require('./routes/planets/planets.router')
-const launchesRouter = require('./routes/launches/launches.router')
 
-app.use('/planets', planetsRouter)
+const { api } = require('./routes/api')
+// const planetsRouter = require('./routes/planets/planets.router')
+// const launchesRouter = require('./routes/launches/launches.router')
 
-app.use('/launches', launchesRouter)
+// app.use('/planets', api.planetsRouter)
+
+// app.use('/launches', api.launchesRouter)
 
 
+app.use('/v1', api)
 module.exports = app

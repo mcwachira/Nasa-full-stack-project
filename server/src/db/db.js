@@ -1,5 +1,7 @@
+require('dotenv').config()
+
 const mongoose = require('mongoose')
-const Mongo_Uri = process.env.Mongo_Uri || 'mongodb+srv://mcwachira:nokia100@cluster0.pniqqa2.mongodb.net/?retryWrites=true&w=majority'
+;
 
 
 
@@ -16,7 +18,7 @@ mongoose.connection.on('error', (error) => {
 
 const connectDb = async () => {
     try {
-        const connect = await mongoose.connect(Mongo_Uri, {
+        const connect = await mongoose.connect(process.env.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             name: 'Nasa_Api',
