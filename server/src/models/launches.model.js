@@ -4,20 +4,22 @@ const Launch = require('./launchesModel');
 const Planets = require('./planetModel')
 let DEFAULT_FLIGHT_NUMBER = 100
 
-const launch = {
-    flightNumber: 100,
-    mission: 'Kepler Exploration X',
-    rocket: 'Explorer ISI',
-    launchDate: new Date('December 27, 2030'),
-    target: 'Kepler-422b',
-    customers: ['ztmn', 'Nasa'],
-    upcoming: true,
-    success: true
-}
+// const launch = {
+//     flightNumber: 100,
+//     mission: 'Kepler Exploration X',
+//     rocket: 'Explorer ISI',
+//     launchDate: new Date('December 27, 2030'),
+//     target: 'Kepler-422b',
+//     customers: ['ztmn', 'Nasa'],
+//     upcoming: true,
+//     success: true
+// }
 
 
 const SPACEX_API_URL = 'https://api.spacexdata.com/v4/launches/query'
 
+
+//fetch our data from spacex api and save it in our mongo db database
 const populateData = async () => {
 
     console.log('Downloading launch data ')
@@ -55,6 +57,8 @@ const populateData = async () => {
 
     for (const launchDoc of launchDocs) {
         const payloads = launchDoc['payloads']
+
+        //getting all the customers and adding them to an array
         const customers = payloads.flatMap((payload) => {
             return payload['customers']
         })
@@ -69,17 +73,19 @@ const populateData = async () => {
             success: launchDoc['success'],
             customers: customers
         }
-        console.log(`${launch.flightNumber}`)
+        console.log(`${launch.flightNumber} ${launch.mission}`);
 
-        await saveLaunch(launch)
+        await saveLaunch(launch);
     }
 
 }
 
 
+//save data to mongo db database
 const loadLaunchData = async () => {
 
 
+    //checking if this data exist
     const firstLaunch = await findLaunch({
         flightNumber: 1,
         rocket: 'Falcon 1',
@@ -94,6 +100,17 @@ const loadLaunchData = async () => {
     }
 
 }
+
+const findLaunch = async (filter) => {
+    return await Launch.findOne(filter)
+}
+
+const launchExistWithId = async (launchId) => {
+    return await findLaunch({
+        flightNumber: launchId
+    })
+}
+
 const getLatestFightNumber = async () => {
     const latestLaunch = await Launch
         .findOne()
@@ -108,6 +125,26 @@ const getLatestFightNumber = async () => {
     return latestLaunch.flightNumber
 }
 
+
+
+const getAllLaunches = async (skip, limit) => {
+    return await Launch.find({}, { '_id': 0, '_v': 0 })
+        .sort({ flightNumber: 1 })
+        .skip(skip)
+        .limit(limit)
+}
+
+
+
+const saveLaunch = async (launch) => {
+
+
+    await Launch.findOneAndUpdate({
+        flightNumber: launch.flightNumber
+    }, launch, {
+        upsert: true
+    })
+}
 
 const scheduleNewLaunch = async (launch) => {
     //this is where we need to to check the planet target fo our launch
@@ -134,32 +171,24 @@ const scheduleNewLaunch = async (launch) => {
     await saveLaunch(newLaunch)
 }
 
+const abortLaunchWithId = async (launchId) => {
 
+    const aborted = await Launch.updateOne({
 
-
-
-const saveLaunch = async (launch) => {
-
-
-    await Launch.findOneAndUpdate({
-        flightNumber: launch.flightNumber
-    }, launch, {
-        upsert: true
-    })
-}
-
-const findLaunch = async (filter) => {
-    return await Launch.findOne(filter)
-}
-
-const launchExistWithId = async (launchId) => {
-    return await findLaunch({
         flightNumber: launchId
-    })
+    }, {
+        upcoming: false,
+        success: false,
+    }
+    )
+    return aborted.modifiedCount === 1;
 }
-const getAllLaunches = async () => {
-    return await Launch.find()
-}
+
+
+
+
+
+
 // saveLaunch(launch)
 
 // const addNewLaunch = (launch) => {
@@ -183,19 +212,7 @@ const getAllLaunches = async () => {
 
 // }
 
-const abortLaunchWithId = async (launchId) => {
 
-    const aborted = await Launch.updateOne({
-
-        flightNumber: launchId
-    }, {
-        upcoming: false,
-        success: false,
-    }
-    )
-
-    return aborted.ok === 1 && aborted.nModified === 1;
-}
 module.exports = {
     getAllLaunches,
     launchExistWithId,

@@ -10,29 +10,48 @@ const httpGetAllLaunches = async (req, res) => {
 }
 
 const httpAddLaunchData = async (req, res) => {
-    let { mission, rocket, launchDate, target } = req.body
+    // let { mission, rocket, launchDate, target } = req.body
 
 
-    if (!mission || !rocket || !launchDate || !target) {
-        return res.status(400).json({ error: 'please add all the fields' })
+    // if (!mission || !rocket || !launchDate || !target) {
+    //     return res.status(400).json({ error: 'please add all the fields' })
+    // }
+
+    // //if(isNaN(launchDate))
+    // launchDate = new Date(launchDate);
+    // if (launchDate.toString() === 'invalid date') {
+    //     return res.status(400).json({ error: 'date invalid format ' })
+    // }
+    // const newLaunchDate = {
+    //     mission,
+    //     rocket,
+    //     launchDate,
+    //     target
+    // }
+
+    // // console.log(launches)
+    // await scheduleNewLaunch(newLaunchDate)
+
+    // res.status(201).json(newLaunchDate)
+
+    const launch = req.body;
+
+    if (!launch.mission || !launch.rocket || !launch.launchDate
+        || !launch.target) {
+        return res.status(400).json({
+            error: 'Missing required launch property',
+        });
     }
 
-    //if(isNaN(launchDate))
-    launchDate = new Date(launchDate);
-    if (launchDate.toString() === 'invalid date') {
-        return res.status(400).json({ error: 'date invalid format ' })
-    }
-    const newLaunchDate = {
-        mission,
-        rocket,
-        launchDate,
-        target
+    launch.launchDate = new Date(launch.launchDate);
+    if (isNaN(launch.launchDate)) {
+        return res.status(400).json({
+            error: 'Invalid launch date',
+        });
     }
 
-    // console.log(launches)
-    await scheduleNewLaunch(newLaunchDate)
-
-    res.status(201).json(newLaunchDate)
+    await scheduleNewLaunch(launch);
+    return res.status(201).json(launch);
 }
 
 
