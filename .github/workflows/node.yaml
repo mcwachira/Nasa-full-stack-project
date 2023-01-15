@@ -7,6 +7,11 @@ on:
 
 jobs:
   build:
+    env:
+      CI: true
+    strategy:
+      matrix:
+        node-version: [14.X, 16.x, 18.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,3 +21,4 @@ jobs:
           node-version: '16'
       - run: npm install
       - run: npm run build --prefix client
+      - run: npm test
