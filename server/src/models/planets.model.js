@@ -4,7 +4,7 @@ const path = require('path')
 
 
 const Planets = require('./planetModel')
-const isHabitable = (planet) => {
+const isHabitablePlanet = (planet) => {
     return planet['koi_disposition'] === 'CONFIRMED'
         && planet['koi_insol'] > 0.36
         && planet['koi_insol'] < 1.11
@@ -51,20 +51,17 @@ const saveHabitablePlanets = async (planet) => {
 //turn this into a promise to  wait for data to reload
 const loadPlanetsData = () => {
     return new Promise((resolve, reject) => {
-        fs.createReadStream(path.join(__dirname, "..", "data", 'kepler_data.csv'))
+        fs.createReadStream(path.join(__dirname, '..', 'data', 'kepler_data.csv'))
             .pipe(parse({
                 comment: '#',
-                columns: true
+                columns: true,
             }))
             .on('data', async (data) => {
-                if (isHabitable(data)) {
+                if (isHabitablePlanet(data)) {
                     //insert + update = upset
                     saveHabitablePlanets(data)
                     // habitablePlanets.push(data)
                 }
-
-
-                // habitablePlanets.push(data)
             })
             .on('error', (error) => {
 

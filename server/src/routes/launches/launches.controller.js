@@ -3,7 +3,8 @@ const { getAllLaunches, scheduleNewLaunch, launchExistWithId, abortLaunchWithId 
 
 const httpGetAllLaunches = async (req, res) => {
 
-    const { page, limit } = getPagination(req.query())
+    //issues fixed testing
+    const { skip, limit } = getPagination(req.query);
     // console.log(launches)
     const launches = await getAllLaunches(skip, limit)
     return res.status(200).json(launches)
