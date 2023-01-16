@@ -8,12 +8,9 @@ const morgan = require('morgan')
 
 
 //enabling cors
-app.use(cors(
-    {
-        origin: 'http://localhost:3000'
-    }
-))
-
+app.use(cors({
+    origin: 'http://localhost:3000',
+}));
 //enables us to se logs in our terminal
 app.use(morgan('combined'))
 
@@ -42,4 +39,11 @@ const { api } = require('./routes/api')
 
 
 app.use('/v1', api)
+
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
 module.exports = app
+
+
